@@ -2,7 +2,8 @@ MAKE_FLAGS += -j
 
 BIN_NAME := a.gb
 
-SRC := $(wildcard src/*.c)
+SRC = $(wildcard src/*.c)
+SRC += $(wildcard src/asset/*.c)
 
 BUILD_DIR := .build
 
