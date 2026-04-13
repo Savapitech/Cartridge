@@ -1,0 +1,7 @@
+*.o
+*.gb
+*.ihx
+.buid/
+*.asm
+*.lst
+*.sym
