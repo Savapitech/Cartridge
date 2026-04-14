@@ -1,42 +1,74 @@
 #include <gb/gb.h>
-#include <stdlib.h>
+#include <gbdk/console.h>
 #include <stdio.h>
+#include <string.h>
+#include <gb/gb.h>
+#include <gbdk/font.h>
+#include "utils/utils.h"
 
-#include "asset/sonic.h"
+#include "casino.h"
 
+bank_t bank = {
+    .name = "Arthur",
+    .name_size = 6,
+    .money = 4242
+};
 
-uint8_t position_X = 8;
-uint8_t position_Y = 16;
+uint8_t slot_machine(bank_t *player_bank) {
+    return 1;
+}
 
-void main(void) {
-    printf("Hello World!");
+uint8_t roulette(bank_t *player_bank) {
+    return 0;
+}
 
+void init(void)
+{
     DISPLAY_ON;
-    SHOW_SPRITES;
+
     SHOW_BKG;
-    SPRITES_8x8;
+    SHOW_WIN;
+    SHOW_SPRITES;
 
-    set_sprite_data(0, 1, sonic_tiles);
-    set_sprite_tile(0, 0);
-    
-    move_sprite(0, position_X, position_Y);
+    BGP_REG = 0xE4;
+    OBP0_REG = 0xD2;
 
-    while(1) {
-        uint8_t joy = joypad();
+    SCX_REG = 0;
+    SCY_REG = 0;
+}
 
-        if (joy & J_LEFT) {
-            position_X--;
-        }
-        if (joy & J_RIGHT) {
-            position_X++;
-        }
-        if (joy & J_UP) {
-            position_Y--;
-        }
-        if (joy & J_DOWN) {
-            position_Y++;
-        }
-        move_sprite(0, position_X, position_Y);
-        wait_vbl_done(); 
+void init_font(void)
+{
+    font_init();
+
+    font_t font = font_load(font_ibm);
+    font_set(font);
+}
+
+
+void render(bank_t *bank)
+{
+    draw_text(0, 0, bank->name);
+    draw_money(bank->money, 0, 1);
+}
+
+
+
+const game_t game_tab[] = {
+    { "Slots",    5, slot_machine },
+    { "Roulette", 8, roulette }
+};
+
+void main(void)
+{
+    init();
+    init_font();
+
+    draw_text(0, 0, bank.name);
+
+    while(1)
+    {
+        render_money(&bank);
+        wait_vbl_done();        
     }
 }

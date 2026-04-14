@@ -4,6 +4,7 @@ BIN_NAME := a.gb
 
 SRC = $(wildcard src/*.c)
 SRC += $(wildcard src/asset/*.c)
+SRC += $(wildcard src/utils/*.c)
 
 BUILD_DIR := .build
 
