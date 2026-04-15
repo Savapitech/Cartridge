@@ -11,14 +11,13 @@ uint8_t roulette(bank_t *player_bank);
 uint8_t menu(bank_t *player_bank);
 uint8_t tax_money(bank_t *player_bank);
 
-typedef struct game_s
-{
-    char name[16];
-    uint8_t name_size;
-    uint8_t  (*game)(bank_t *);
+typedef struct game_s {
+  char name[16];
+  uint8_t name_size;
+  uint8_t (*game)(bank_t *);
 } game_t;
 
-extern const game_t game_tab[]; 
+extern const game_t game_tab[];
 extern const uint8_t GAME_TAB_SIZE;
 
 #endif

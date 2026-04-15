@@ -3,11 +3,10 @@
 
 #include <stdint.h>
 
-typedef struct bank_s
-{
-    char name[16];
-    uint8_t name_size;
-    uint32_t money;
+typedef struct bank_s {
+  char name[16];
+  uint8_t name_size;
+  uint32_t money;
 } bank_t;
 
 #endif
