@@ -1,17 +1,15 @@
+#include <gb/gb.h>
+
 #include "menu.h"
 #include "../casino.h"
 #include "../utils/utils.h"
 #include "games.h"
-#include <gb/gb.h>
 
-uint8_t menu(bank_t *player_bank) {
-  HIDE_BKG;
-  HIDE_WIN;
-
+uint8_t menu(bank_t *player_bank) 
+{
+  CLEAR_WIN;
   draw_text(0, 0, player_bank->name);
-
-  SHOW_BKG;
-  SHOW_WIN;
+  draw_money(player_bank->money, 0, 1);
 
   uint8_t game_idx = 0;
   uint8_t last_idx = MIN_GAME_IDX;

@@ -6,6 +6,7 @@ SRC = $(wildcard src/*.c)
 SRC += $(wildcard src/asset/*.c)
 SRC += $(wildcard src/utils/*.c)
 SRC += $(wildcard src/games/*.c)
+SRC += $(wildcard src/init/*.c)
 
 BUILD_DIR := .build
 
