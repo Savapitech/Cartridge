@@ -7,20 +7,7 @@
 #include "utils/utils.h"
 
 #include "casino.h"
-
-bank_t bank = {
-    .name = "Arthur",
-    .name_size = 6,
-    .money = 4242
-};
-
-uint8_t slot_machine(bank_t *player_bank) {
-    return 1;
-}
-
-uint8_t roulette(bank_t *player_bank) {
-    return 0;
-}
+#include "games/games.h"
 
 void init(void)
 {
@@ -45,7 +32,6 @@ void init_font(void)
     font_set(font);
 }
 
-
 void render(bank_t *bank)
 {
     draw_text(0, 0, bank->name);
@@ -54,13 +40,16 @@ void render(bank_t *bank)
 
 
 
-const game_t game_tab[] = {
-    { "Slots",    5, slot_machine },
-    { "Roulette", 8, roulette }
-};
-
 void main(void)
 {
+    bank_t bank = {
+        .name = "Arthur",
+        .name_size = 6,
+        .money = 0
+    };
+
+    uint8_t game_idx = 0;
+
     init();
     init_font();
 
@@ -69,6 +58,8 @@ void main(void)
     while(1)
     {
         render_money(&bank);
-        wait_vbl_done();        
+        game_idx = game_tab[game_idx].game(&bank);
+        draw_money((uint32_t)game_idx, 0, 2);
+        wait_vbl_done();
     }
 }
