@@ -1,12 +1,11 @@
 #include <gb/gb.h>
 
-#include "menu.h"
 #include "../casino.h"
 #include "../utils/utils.h"
 #include "games.h"
+#include "menu.h"
 
-uint8_t menu(bank_t *player_bank) 
-{
+uint8_t menu(bank_t *player_bank) {
   CLEAR_WIN;
   draw_text(0, 0, player_bank->name);
   draw_money(player_bank->money, 0, 1);

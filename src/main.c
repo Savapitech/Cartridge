@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "init/init.h"
 #include "casino.h"
 #include "games/games.h"
+#include "init/init.h"
 #include "utils/utils.h"
 
 void main(void) {
@@ -17,7 +17,7 @@ void main(void) {
 
   draw_text(0, 0, bank.name);
 
-  while (1) {
+  for (;;) {
     game_idx = game_tab[game_idx].game(&bank);
     wait_vbl_done();
   }

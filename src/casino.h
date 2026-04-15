@@ -1,8 +1,8 @@
 #ifndef CASINO_H
 #define CASINO_H
 
-#include <stdint.h>
 #include <gb/gb.h>
+#include <stdint.h>
 
 #define CLEAR_WIN fill_win_rect(0, 0, 20, 32, 0)
 

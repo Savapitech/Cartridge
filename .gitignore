@@ -5,3 +5,5 @@
 *.asm
 *.lst
 *.sym
+.idea/
+.DS_Store

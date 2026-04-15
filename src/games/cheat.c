@@ -3,12 +3,12 @@
 
 #include <gb/gb.h>
 
-#define START   0
-#define END     27
-#define DEL     27
-#define ALPHABET1   "a b c d e f g h i"
-#define ALPHABET2   "j k l m n o p q r"
-#define ALPHABET3   "s t u v w x y z <"
+#define START 0
+#define END 27
+#define DEL 27
+#define ALPHABET1 "a b c d e f g h i"
+#define ALPHABET2 "j k l m n o p q r"
+#define ALPHABET3 "s t u v w x y z <"
 
 #define ALPHABET_PADDING 1
 #define ALPHABET_COORD1 10
@@ -21,12 +21,9 @@
 
 #define INPUT_BUFFER 11
 
-const uint8_t coordAlpha[3] = {
-    9, 18, 27
-};
+const uint8_t coordAlpha[3] = {9, 18, 27};
 
-void input_handler(char buffer[INPUT_BUFFER])
-{
+void input_handler(char buffer[INPUT_BUFFER]) {
   uint8_t keys = 0;
   uint8_t car = 0;
 
@@ -42,52 +39,49 @@ void input_handler(char buffer[INPUT_BUFFER])
     keys = joypad();
 
     if ((keys & J_RIGHT) && coord < END - 1) {
-        coord++;
+      coord++;
     }
     if ((keys & J_LEFT) && coord > START) {
-        coord--;
+      coord--;
     }
     if ((keys & J_DOWN) && coord + 9 < END) {
-        coord += 9;
+      coord += 9;
     }
     if ((keys & J_UP) && coord >= 9) {
-        coord -= 9;
+      coord -= 9;
     }
-    
-    if (coord >= coordAlpha[1]){
-        draw_text((coord - coordAlpha[1] - 1) << 1, ALPHABET_COORD3 , " ");
-        draw_text((coord - coordAlpha[1] + 1) << 1, ALPHABET_COORD3 , " ");
-        draw_text(coord - coordAlpha[1]       << 1, ALPHABET_COORD3 + 1, " ");
-        draw_text(coord - coordAlpha[1]       << 1, ALPHABET_COORD3 - 1, " ");
-        draw_text((coord - coordAlpha[1])     << 1, ALPHABET_COORD3, ">");
-        
-    }
-    else if (coord >= coordAlpha[0]){
-        draw_text((coord - coordAlpha[0] - 1) << 1, ALPHABET_COORD2 , " ");
-        draw_text((coord - coordAlpha[0] + 1) << 1, ALPHABET_COORD2 , " ");
-        draw_text(coord  - coordAlpha[0]      << 1,  ALPHABET_COORD2 + 1, " ");
-        draw_text(coord  - coordAlpha[0]      << 1,  ALPHABET_COORD2 - 1, " ");
-        draw_text((coord - coordAlpha[0])     << 1, ALPHABET_COORD2, ">");
-    }
-    else {
-        draw_text((coord - 1) << 1, ALPHABET_COORD1 , " ");
-        draw_text((coord + 1) << 1, ALPHABET_COORD1 , " ");
-        draw_text((coord) << 1, ALPHABET_COORD1 + 1, " ");
-        draw_text((coord) << 1, ALPHABET_COORD1 - 1, " ");
-        draw_text(coord << 1, ALPHABET_COORD1 , ">");
+
+    if (coord >= coordAlpha[1]) {
+      draw_text((coord - coordAlpha[1] - 1) << 1, ALPHABET_COORD3, " ");
+      draw_text((coord - coordAlpha[1] + 1) << 1, ALPHABET_COORD3, " ");
+      draw_text(coord - coordAlpha[1] << 1, ALPHABET_COORD3 + 1, " ");
+      draw_text(coord - coordAlpha[1] << 1, ALPHABET_COORD3 - 1, " ");
+      draw_text((coord - coordAlpha[1]) << 1, ALPHABET_COORD3, ">");
+
+    } else if (coord >= coordAlpha[0]) {
+      draw_text((coord - coordAlpha[0] - 1) << 1, ALPHABET_COORD2, " ");
+      draw_text((coord - coordAlpha[0] + 1) << 1, ALPHABET_COORD2, " ");
+      draw_text(coord - coordAlpha[0] << 1, ALPHABET_COORD2 + 1, " ");
+      draw_text(coord - coordAlpha[0] << 1, ALPHABET_COORD2 - 1, " ");
+      draw_text((coord - coordAlpha[0]) << 1, ALPHABET_COORD2, ">");
+    } else {
+      draw_text((coord - 1) << 1, ALPHABET_COORD1, " ");
+      draw_text((coord + 1) << 1, ALPHABET_COORD1, " ");
+      draw_text((coord) << 1, ALPHABET_COORD1 + 1, " ");
+      draw_text((coord) << 1, ALPHABET_COORD1 - 1, " ");
+      draw_text(coord << 1, ALPHABET_COORD1, ">");
     }
 
     if (keys & J_B) {
-        if (coord == END - 1){
-            cursor = (cursor == 0) ? (cursor) : (cursor - 1);
-            buffer[cursor] = '_';
-        }
-        else {
-            buffer[cursor] = coord + 'a';
-            cursor++;
-        }
-        if (cursor == 10)
-            return;
+      if (coord == END - 1) {
+        cursor = (cursor == 0) ? (cursor) : (cursor - 1);
+        buffer[cursor] = '_';
+      } else {
+        buffer[cursor] = coord + 'a';
+        cursor++;
+      }
+      if (cursor == 10)
+        return;
     }
     draw_text(INPUT_HANDLER_COORD_X, INPUT_HANDLER_COORD_Y, buffer);
     wait_pad_release();
@@ -96,13 +90,11 @@ void input_handler(char buffer[INPUT_BUFFER])
   return;
 }
 
-
-uint8_t cheat_code(bank_t *player_bank)
-{
-    char buffer[INPUT_BUFFER] = INPUT_HANDLER;
-    CLEAR_WIN;
-    draw_text(0, 0, player_bank->name);
-    draw_money(player_bank->money, 0, 1);
-    input_handler(buffer);
-    return 0;
+uint8_t cheat_code(bank_t *player_bank) {
+  char buffer[INPUT_BUFFER] = INPUT_HANDLER;
+  CLEAR_WIN;
+  draw_text(0, 0, player_bank->name);
+  draw_money(player_bank->money, 0, 1);
+  input_handler(buffer);
+  return 0;
 }
