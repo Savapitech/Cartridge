@@ -5,4 +5,6 @@
 
 extern const uint8_t star_tile[16];
 extern const uint8_t cross_tile[16];
+extern const uint8_t circle_tile[16];
+extern const uint8_t epitech_tile[16];
 #endif

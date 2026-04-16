@@ -18,6 +18,13 @@ typedef struct game_s {
   uint8_t (*game)(bank_t *);
 } game_t;
 
+#define MENU 0
+#define SLOT MENU + 1
+#define BLAC_JACK SLOT + 1
+#define ROULETTE BLAC_JACK + 1
+#define TAX_MONEY ROULETTE + 1
+#define CHEAT_CODE TAX_MONEY + 1
+
 extern const game_t game_tab[];
 extern const uint8_t GAME_TAB_SIZE;
 

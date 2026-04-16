@@ -1,4 +1,5 @@
 #include <gb/gb.h>
+#include <rand.h>
 
 #include "../casino.h"
 #include "../utils/utils.h"
@@ -20,6 +21,7 @@ uint8_t menu(bank_t *player_bank) {
 
     if (keys & J_A) {
       wait_pad_release();
+      initrand(DIV_REG);
       return game_idx;
     }
 
