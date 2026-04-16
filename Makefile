@@ -23,6 +23,8 @@ _start: all
 
 CC = lcc
 
+CFLAGS = -Wf--max-allocs-per-node50000
+
 # call mk-profile release, SRC, additional CFLAGS
 define mk-profile
 
@@ -47,6 +49,12 @@ all: $(NAME_release)
 
 debug: CXXFLAGS += -D DEBUG_MODE
 debug: all
+
+fast: CFLAGS += -Wf--opt-code-speed
+fast: all
+
+small: CFLAGS += -Wf--opt-code-size
+small: all
 
 launch: all
 launch:

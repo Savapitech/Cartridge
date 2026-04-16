@@ -1,6 +1,4 @@
 #include <gb/gb.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "casino.h"
 #include "games/games.h"

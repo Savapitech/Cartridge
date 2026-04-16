@@ -57,8 +57,6 @@ uint8_t menu(bank_t *player_bank) {
   return game_idx;
 }
 
-/*TMP*/
-
 uint8_t roulette(bank_t *player_bank) {
   draw_text(5, 5, "B");
   return MENU;
