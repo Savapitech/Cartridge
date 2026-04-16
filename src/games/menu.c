@@ -7,6 +7,7 @@
 
 uint8_t menu(bank_t *player_bank) {
   CLEAR_WIN;
+  HIDE_SPRITES;
   draw_text(0, 0, player_bank->name);
   draw_money(player_bank->money, 0, 1);
 
@@ -14,7 +15,7 @@ uint8_t menu(bank_t *player_bank) {
   uint8_t last_idx = MIN_GAME_IDX;
   uint8_t keys = 0;
 
-  while (!(keys & J_A)) {
+  while (!(keys & J_SELECT)) {
     keys = joypad();
 
     if (keys & J_A) {
@@ -57,11 +58,6 @@ uint8_t menu(bank_t *player_bank) {
 }
 
 /*TMP*/
-
-uint8_t slot_machine(bank_t *player_bank) {
-  draw_text(5, 5, "A");
-  return MENU;
-}
 
 uint8_t roulette(bank_t *player_bank) {
   draw_text(5, 5, "B");

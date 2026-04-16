@@ -2,8 +2,8 @@
 #define UTILS_H
 
 #include "../casino.h"
-#include <stdint.h>
 #include "get_input.h"
+#include <stdint.h>
 
 void draw_text(uint8_t x, uint8_t y, const char *str);
 void draw_money(uint32_t money, uint8_t x, uint8_t y);

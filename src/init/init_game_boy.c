@@ -5,7 +5,6 @@ void init(void) {
 
   SHOW_BKG;
   SHOW_WIN;
-  SHOW_SPRITES;
 
   BGP_REG = 0xE4;
   OBP0_REG = 0xD2;

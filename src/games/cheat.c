@@ -1,11 +1,10 @@
 #include "../casino.h"
-#include "../utils/utils.h"
 #include "../utils/get_input.h"
+#include "../utils/utils.h"
 
 #include <gb/gb.h>
 
 #include <string.h>
-
 
 uint8_t cheat_code(bank_t *player_bank) {
   char buffer[INPUT_BUFFER] = INPUT_HANDLER;
