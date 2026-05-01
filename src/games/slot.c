@@ -80,6 +80,12 @@ inline void play_loose(void)
 void win_animation()
 {
   uint8_t y = 0;
+  uint8_t coin_x[5] = {20, 50, 80, 110, 140};
+  uint8_t coin_y[5] = {0, 220, 240, 210, 230};
+
+  for (uint8_t i = 0; i < 5; i++) {
+    set_sprite_tile(16 + i, 2);
+  }
 
   while (y != (144 >> 1))
   {
@@ -90,6 +96,14 @@ void win_animation()
       SHOW_SPRITES;
       SHOW_BKG;
     }
+
+    for (uint8_t i = 0; i < 5; i++) {
+      coin_y[i] += 4;
+      if (coin_y[i] > 160 && coin_y[i] < 200)
+        coin_y[i] = 0;
+      move_sprite(16 + i, coin_x[i], coin_y[i]);
+    }
+
     wait_vbl_done();
 
     if ((y & 15) == 0) {
