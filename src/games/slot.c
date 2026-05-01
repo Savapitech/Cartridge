@@ -36,7 +36,11 @@ void init_slot(void)
     ptr->type = 0;
     ptr->type = (uint8_t)rand() & 3;
     set_sprite_tile(i, ptr->type);
-    move_sprite(i, ptr->x, ptr->y);
+    if (ptr->y < TARGET_Y - 2 || ptr->y > TARGET_Y + 4) {
+      move_sprite(i, 0, 0);
+    } else {
+      move_sprite(i, ptr->x, ptr->y);
+    }
     ptr++;
   }
 
@@ -147,6 +151,7 @@ void stop_slot(uint8_t col_start) {
   slot_t *col = &slots_array[col_start];
   uint8_t best_idx = 0;
   uint8_t min_dist = 255;
+  
   for (uint8_t i = 0; i < 4; i++) {
     uint8_t dist =
         (col[i].y > TARGET_Y) ? (col[i].y - TARGET_Y) : (TARGET_Y - col[i].y);
@@ -156,6 +161,7 @@ void stop_slot(uint8_t col_start) {
       best_idx = i;
     }
   }
+
   while (col[best_idx].y != TARGET_Y) {
     int8_t step = (col[best_idx].y < TARGET_Y) ? 1 : -1;
 
@@ -165,10 +171,15 @@ void stop_slot(uint8_t col_start) {
         col[i].y = 80;
       else if (col[i].y < 80)
         col[i].y = 143;
-      move_sprite(col_start + i, col[i].x, col[i].y);
+      if (col[i].y < TARGET_Y - 2 || col[i].y > TARGET_Y + 4) {
+        move_sprite(col_start + i, 0, 0);
+      } else {
+        move_sprite(col_start + i, col[i].x, col[i].y);
+      }
     }
     wait_vbl_done();
   }
+  
   for (uint8_t i = 0; i < 4; i++) {
     if (i != best_idx) {
       col[i].y = 0;
@@ -225,18 +236,21 @@ uint8_t slot_machine(bank_t *player_bank) {
     slot_t *ptr = slots_array + stop_col;
 
     for (uint8_t i = stop_col; i < 16; i++) {
-      ptr->y += 3;
+      ptr->y += 2;
       if (ptr->y >= 144) {
         ptr->type = 0;
         ptr->type = (uint8_t)rand() & 3;
         set_sprite_tile(i, ptr->type);
         ptr->y = 80;
       }
-      move_sprite(i, ptr->x, ptr->y);
+      if (ptr->y < TARGET_Y - 2 || ptr->y > TARGET_Y + 4) {
+        move_sprite(i, 0, 0);
+      } else {
+        move_sprite(i, ptr->x, ptr->y);
+      }
       ptr++;
     }
     wait_vbl_done();
   }
-
   return MENU;
 }
