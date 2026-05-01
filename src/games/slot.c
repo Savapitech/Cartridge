@@ -91,7 +91,7 @@ void win_animation()
     set_sprite_tile(i, 2);
   }
 
-  while (y != (144 >> 1))
+  while (y != 100)
   {
     if ((y >> 3) & 1) {
       HIDE_SPRITES;
@@ -179,7 +179,7 @@ void stop_slot(uint8_t col_start) {
     }
     wait_vbl_done();
   }
-  
+
   for (uint8_t i = 0; i < 4; i++) {
     if (i != best_idx) {
       col[i].y = 0;
@@ -198,6 +198,7 @@ uint8_t slot_machine(bank_t *player_bank) {
   uint8_t keys_pressed = 0;
   uint8_t stop_col = 0;
   uint8_t cooldown = 0;
+  uint8_t target_type = 255;
 
   while (!(keys & J_SELECT)) 
   {
@@ -214,11 +215,21 @@ uint8_t slot_machine(bank_t *player_bank) {
     if ((keys_pressed & J_B) && (cooldown == 0)) {
       if (stop_col < 16) {
         stop_slot(stop_col);
+        if (stop_col == 0) {
+          for (uint8_t i = 0; i < 4; i++) {
+            if (slots_array[i].y == TARGET_Y) {
+              target_type = slots_array[i].type;
+              break;
+            }
+          }
+        }
         stop_col += 4;
         cooldown = 15;
       }
+
       if (stop_col == 16) {
         stop_col = 0;
+        target_type = 255;
         delay(500);
         for (slot_t *col = &slots_array[0]; stop_col < 16; stop_col++){
           move_sprite(stop_col, 200, 200);
@@ -238,11 +249,15 @@ uint8_t slot_machine(bank_t *player_bank) {
     for (uint8_t i = stop_col; i < 16; i++) {
       ptr->y += 2;
       if (ptr->y >= 144) {
-        ptr->type = 0;
-        ptr->type = (uint8_t)rand() & 3;
+        if (target_type != 255 && ((uint8_t)rand() & 1) == 0) {
+            ptr->type = target_type;
+        } else {
+            ptr->type = (uint8_t)rand() & 3;
+        }
         set_sprite_tile(i, ptr->type);
         ptr->y = 80;
       }
+
       if (ptr->y < TARGET_Y - 2 || ptr->y > TARGET_Y + 4) {
         move_sprite(i, 0, 0);
       } else {
