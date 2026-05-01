@@ -84,7 +84,7 @@ void win_animation()
   uint8_t coin_y[5] = {0, 220, 240, 210, 230};
 
   for (uint8_t i = 0; i < 5; i++) {
-    set_sprite_tile(16 + i, 2);
+    set_sprite_tile(i, 2);
   }
 
   while (y != (144 >> 1))
@@ -101,7 +101,7 @@ void win_animation()
       coin_y[i] += 4;
       if (coin_y[i] > 160 && coin_y[i] < 200)
         coin_y[i] = 0;
-      move_sprite(16 + i, coin_x[i], coin_y[i]);
+      move_sprite(i, coin_x[i], coin_y[i]);
     }
 
     wait_vbl_done();
@@ -207,12 +207,17 @@ uint8_t slot_machine(bank_t *player_bank) {
         cooldown = 15;
       }
       if (stop_col == 16) {
+        stop_col = 0;
+        delay(500);
+        for (slot_t *col = &slots_array[0]; stop_col < 16; stop_col++){
+          move_sprite(stop_col, 200, 200);
+          col++;
+        }
         if (check_win()) {
           player_bank->money += 100;
           draw_money(player_bank->money, 0, 1);
-          /*animation*/
+          win_animation();
         }
-        win_animation();
         return SLOT;
       }
     }
