@@ -77,6 +77,27 @@ inline void play_loose(void)
     delay(120);
 }
 
+void win_animation()
+{
+  uint8_t y = 0;
+
+  while (y != 144)
+  {
+    if ((y >> 3) & 1) {
+      HIDE_SPRITES;
+      HIDE_BKG;
+    } else {
+      SHOW_SPRITES;
+      SHOW_BKG;
+    }
+    wait_vbl_done();
+
+    y++;
+  }
+  SHOW_SPRITES;
+  SHOW_BKG;
+}
+
 uint8_t check_win(void) {
   uint8_t winning_types[4];
   uint8_t found = 0;
@@ -168,7 +189,10 @@ uint8_t slot_machine(bank_t *player_bank) {
         if (check_win()) {
           player_bank->money += 100;
           draw_money(player_bank->money, 0, 1);
+          /*animation*/
         }
+        win_animation();
+        return SLOT;
       }
     }
 
