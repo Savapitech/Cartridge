@@ -5,6 +5,8 @@
 #include "init/init.h"
 #include "utils/utils.h"
 
+uint8_t luck;
+
 void main(void) {
   bank_t bank = {.name = "Arthur", .name_size = 6, .money = 0};
 
@@ -15,7 +17,8 @@ void main(void) {
 
   draw_text(0, 0, bank.name);
 
-  for (;;) {
+  for (;;) 
+  {
     game_idx = game_tab[game_idx].game(&bank);
     wait_vbl_done();
   }

@@ -7,7 +7,7 @@
 #include "menu.h"
 
 uint8_t menu(bank_t *player_bank) {
-  CLEAR_WIN;
+  CLEAR_BKG;
   HIDE_SPRITES;
   draw_text(0, 0, player_bank->name);
   draw_money(player_bank->money, 0, 1);

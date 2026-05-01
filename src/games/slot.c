@@ -17,8 +17,12 @@ const uint8_t slot_machine_border[] = {
     T_VT, T_SP, T_SP, T_SP, T_SP, T_SP, T_SP, T_SP, T_SP, T_VT,
     T_BL, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_BR};
 
-void init_slot(void) {
-  CLEAR_WIN;
+void init_slot(void) 
+{
+  CLEAR_BKG;
+  NR52_REG = 0x80;
+  NR51_REG = 0xFF;
+  NR50_REG = 0x77;
   set_sprite_data(0, 1, star_tile);
   set_sprite_data(1, 1, cross_tile);
   set_sprite_data(2, 1, circle_tile);
@@ -29,6 +33,7 @@ void init_slot(void) {
     set_sprite_tile(i, 0);
     ptr->x = slot_pos[i >> 2];
     ptr->y = 80 + ((i & 3) << 4);
+    ptr->type = 0;
     ptr->type = (uint8_t)rand() & 3;
     set_sprite_tile(i, ptr->type);
     move_sprite(i, ptr->x, ptr->y);
@@ -36,9 +41,40 @@ void init_slot(void) {
   }
 
   draw_text(4, 5, "SLOT MACHINE");
-  set_win_tiles(5, 9, 10, 3, slot_machine_border);
-
+  set_bkg_tiles(5, 9, 10, 3, slot_machine_border);
+  set_bkg_tiles(5, 9, 10, 3, slot_machine_border);
   SHOW_SPRITES;
+}
+
+inline void play_jackpot(void)
+{
+    NR21_REG = 0x80;
+    NR22_REG = 0xF3;
+    NR23_REG = 0x40;
+    NR24_REG = 0xC3;
+    delay(100);
+
+    NR23_REG = 0x70;
+    NR24_REG = 0xC3;
+    delay(100);
+}
+
+inline void play_loose(void)
+{
+    NR21_REG = 0x80;
+    NR22_REG = 0xF2;
+
+    NR23_REG = 0x70;
+    NR24_REG = 0xC3;
+    delay(80);
+
+    NR23_REG = 0x50;
+    NR24_REG = 0xC3;
+    delay(80);
+
+    NR23_REG = 0x30;
+    NR24_REG = 0xC3;
+    delay(120);
 }
 
 uint8_t check_win(void) {
@@ -58,8 +94,10 @@ uint8_t check_win(void) {
   if (winning_types[0] == winning_types[1] &&
       winning_types[1] == winning_types[2] &&
       winning_types[2] == winning_types[3]) {
+    play_jackpot();
     return WIN;
   }
+  play_loose();
   return LOOSE;
 }
 
@@ -85,7 +123,6 @@ void stop_slot(uint8_t col_start) {
         col[i].y = 80;
       else if (col[i].y < 80)
         col[i].y = 143;
-
       move_sprite(col_start + i, col[i].x, col[i].y);
     }
     wait_vbl_done();
@@ -109,7 +146,8 @@ uint8_t slot_machine(bank_t *player_bank) {
   uint8_t stop_col = 0;
   uint8_t cooldown = 0;
 
-  while (!(keys & J_SELECT)) {
+  while (!(keys & J_SELECT)) 
+  {
     prev_keys = keys;
     keys = joypad();
     keys_pressed = (keys ^ prev_keys) & keys;
@@ -139,6 +177,9 @@ uint8_t slot_machine(bank_t *player_bank) {
     for (uint8_t i = stop_col; i < 16; i++) {
       ptr->y += 3;
       if (ptr->y >= 144) {
+        ptr->type = 0;
+        ptr->type = (uint8_t)rand() & 3;
+        set_sprite_tile(i, ptr->type);
         ptr->y = 80;
       }
       move_sprite(i, ptr->x, ptr->y);

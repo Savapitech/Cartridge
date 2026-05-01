@@ -14,7 +14,7 @@ void draw_money(uint32_t money, uint8_t x, uint8_t y) {
   uint8_t draw_x = x;
 
   if (money == 0) {
-    set_win_tile_xy(draw_x, y, '0' - 32);
+    set_bkg_tile_xy(draw_x, y, '0' - 32);
     draw_x++;
   } else {
     for (i = 0; i < 10; i++) {
@@ -27,13 +27,13 @@ void draw_money(uint32_t money, uint8_t x, uint8_t y) {
       if (digit > 0)
         started = 1;
       if (started == 1) {
-        set_win_tile_xy(draw_x, y, digit + '0' - 32);
+        set_bkg_tile_xy(draw_x, y, digit + '0' - 32);
         draw_x++;
       }
     }
   }
   while (draw_x < x + 10) {
-    set_win_tile_xy(draw_x, y, ' ' - 32);
+    set_bkg_tile_xy(draw_x, y, ' ' - 32);
     draw_x++;
   }
 }

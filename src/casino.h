@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define CLEAR_WIN fill_win_rect(0, 0, 20, 32, 0)
+#define CLEAR_BKG fill_bkg_rect(0, 0, 32, 32, 0)
 
 typedef struct bank_s {
   char name[16];
