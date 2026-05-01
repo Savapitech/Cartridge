@@ -81,7 +81,7 @@ void win_animation()
 {
   uint8_t y = 0;
 
-  while (y != 144)
+  while (y != (144 >> 1))
   {
     if ((y >> 3) & 1) {
       HIDE_SPRITES;
@@ -91,6 +91,13 @@ void win_animation()
       SHOW_BKG;
     }
     wait_vbl_done();
+
+    if ((y & 15) == 0) {
+      NR21_REG = 0x80;
+      NR22_REG = 0x82;
+      NR23_REG = 0x80;
+      NR24_REG = 0xC7;
+    }
 
     y++;
   }
