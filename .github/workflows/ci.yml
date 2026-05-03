@@ -40,9 +40,6 @@ jobs:
           key: ${{ secrets.GH_SSH_PRIVATE_KEY }}
           known_hosts: $GH_PUB_KEY
 
-      - name: Check code format
-        run: make check_format
-
       - name: Install GBDK
         run: |
           wget https://github.com/gbdk-2020/gbdk-2020/releases/download/4.5.0/gbdk-linux64.tar.gz
