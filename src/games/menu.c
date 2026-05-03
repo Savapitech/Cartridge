@@ -59,17 +59,12 @@ uint8_t menu(bank_t *player_bank) {
   return game_idx;
 }
 
-uint8_t roulette(bank_t *player_bank) {
-  draw_text(5, 5, "B");
-  return MENU;
-}
-
 uint8_t black_jack(bank_t *player_bank) {
   draw_text(5, 5, "C");
   return MENU;
 }
 
 uint8_t tax_money(bank_t *player_bank) {
-  player_bank->money++;
+  player_bank->money += 10;
   return 0;
 }
