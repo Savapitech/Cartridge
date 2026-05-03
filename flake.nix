@@ -24,7 +24,11 @@
         packages = with pkgs;
           [
             retroarch
+            clang-tools
           ];
+        shellHook = ''
+          export PATH="$PWD/gbdk/bin:$PATH"
+        '';
       };
     });
 

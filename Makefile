@@ -21,7 +21,8 @@ include utils.mk
 .PHONY: _start all
 _start: all
 
-CC = lcc
+GBDK_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))gbdk
+CC = $(GBDK_DIR)/bin/lcc
 
 CFLAGS = -Wf--max-allocs-per-node50000
 

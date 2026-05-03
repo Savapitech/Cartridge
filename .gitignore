@@ -1,9 +1,11 @@
 *.o
 *.gb
 *.ihx
+.build/
 .buid/
 *.asm
 *.lst
 *.sym
 .idea/
 .DS_Store
+gbdk/
