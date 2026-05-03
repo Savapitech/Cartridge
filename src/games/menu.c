@@ -60,6 +60,7 @@ uint8_t menu(bank_t *player_bank) {
 }
 
 uint8_t black_jack(bank_t *player_bank) {
+  (void)player_bank;
   draw_text(5, 5, "C");
   return MENU;
 }
