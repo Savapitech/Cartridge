@@ -16,41 +16,7 @@ env:
     github-actions[bot]
 
 jobs:
-  check_the_repository_state:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Get branch name
-        id: branch-names
-        uses: tj-actions/branch-names@v8
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ steps.branch-names.outputs.head_ref_branch }}
-
-      - name: Setup GIT
-        run: |
-          git config --local user.email $GH_BOT_ACC_EMAIL
-          git config --local user.name $GH_BOT_ACC_NAME
-
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.GH_SSH_PRIVATE_KEY }}
-          known_hosts: $GH_PUB_KEY
-
-      - name: Install GBDK
-        run: |
-          wget https://github.com/gbdk-2020/gbdk-2020/releases/download/4.5.0/gbdk-linux64.tar.gz
-          tar xvf gbdk-linux64.tar.gz
-          mv ./gbdk/ /opt/
-
-      - name: Build project
-        run: export PATH="/opt/gbdk/bin/:$PATH"; make
-
   sync_repository:
-    needs: [ check_the_repository_state ]
     if: ${{ !github.event.pull_request }}
     runs-on: ubuntu-latest
     steps:
