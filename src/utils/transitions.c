@@ -25,10 +25,10 @@ void transition_wipe_up(void) {
 void transition_flash(uint8_t times) {
   uint8_t i;
   for (i = 0; i < times; i++) {
-    BGP_REG  = 0x00;
+    BGP_REG = 0x00;
     OBP0_REG = 0x00;
     delay(55);
-    BGP_REG  = 0xE4;
+    BGP_REG = 0xE4;
     OBP0_REG = 0xE4;
     delay(55);
   }
