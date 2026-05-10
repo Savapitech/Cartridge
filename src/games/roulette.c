@@ -3,7 +3,9 @@
 #include <stdint.h>
 
 #include "../assets/roulette_asset.h"
+#include "../audio/audio.h"
 #include "../casino.h"
+#include "../utils/transitions.h"
 #include "../utils/utils.h"
 #include "games.h"
 #include "menu.h"
@@ -27,6 +29,7 @@ static const char *col_strs[3] = {"GREEN", "RED  ", "BLACK"};
 typedef struct {
   uint8_t lo, hi, dur;
 } note_t;
+
 #define N(x, d) {(uint8_t)((x) & 0xFF), (uint8_t)(((x) >> 8) | 0x80), (d)}
 #define REST(d) {0, 0, (d)}
 
@@ -41,19 +44,18 @@ static uint8_t mus_step = 0;
 static uint8_t mus_timer = 0;
 
 static void music_init(void) {
-  NR52_REG = 0x80; /* sound on */
-  NR51_REG = 0xFF; /* all channels both outputs */
-  NR50_REG = 0x77; /* max volume */
+  audio_init();
   mus_step = 0;
   mus_timer = 0;
 }
 
 static void music_tick(void) {
+  const note_t *n;
   if (mus_timer > 0) {
     mus_timer--;
     return;
   }
-  const note_t *n = &melody[mus_step];
+  n = &melody[mus_step];
   if (n->hi) {
     NR21_REG = 0x80;
     NR22_REG = 0x62;
@@ -72,40 +74,6 @@ static void snd_tick(void) {
   NR42_REG = 0x51;
   NR43_REG = 0x77;
   NR44_REG = 0x80;
-}
-
-static void snd_win(void) {
-  NR10_REG = 0x00;
-  NR11_REG = 0xC0;
-  NR12_REG = 0xF3;
-  NR13_REG = 0x0B;
-  NR14_REG = 0x86;
-  delay(70); /* C4 */
-  NR13_REG = 0x72;
-  NR14_REG = 0x86;
-  delay(70); /* E4 */
-  NR13_REG = 0xB2;
-  NR14_REG = 0x86;
-  delay(70); /* G4 */
-  NR12_REG = 0xF1;
-  NR13_REG = 0x05;
-  NR14_REG = 0x87;
-  delay(150); /* C5 */
-}
-
-static void snd_lose(void) {
-  NR10_REG = 0x00;
-  NR11_REG = 0x80;
-  NR12_REG = 0xA2;
-  NR13_REG = 0xB2;
-  NR14_REG = 0x86;
-  delay(90); /* G4 */
-  NR13_REG = 0x72;
-  NR14_REG = 0x86;
-  delay(90); /* E4 */
-  NR13_REG = 0x0B;
-  NR14_REG = 0x86;
-  delay(130); /* C4 */
 }
 
 static void load_tiles(void) {
@@ -218,18 +186,14 @@ static void spin_ball(void) {
     period = (step < SPIN_FAST_STEPS)                    ? 1
              : (step < SPIN_FAST_STEPS + SPIN_MED_STEPS) ? 2
                                                          : 4;
-
     for (f = 0; f < period; f++) {
       wait_vbl_done();
       music_tick();
     }
-
     pos = (pos + 1) & 15;
     move_sprite(SPR_BALL, orb_x[pos], orb_y[pos]);
-
     if ((step & 7) == 0)
       snd_tick();
-
     step++;
   }
   move_sprite(SPR_BALL, 0, 0);
@@ -255,6 +219,13 @@ static uint32_t calc_payout(uint8_t bet_type, uint8_t result, uint32_t bet) {
 }
 
 uint8_t roulette(bank_t *player_bank) {
+  uint8_t sel = BET_RED;
+  uint32_t bet = BET_MIN;
+  uint8_t keys = 0;
+  uint8_t pkeys = 0;
+  uint8_t pressed;
+
+  transition_wipe_down();
   CLEAR_BKG;
   HIDE_WIN;
   HIDE_SPRITES;
@@ -267,13 +238,6 @@ uint8_t roulette(bank_t *player_bank) {
 
   draw_text(1, 0, player_bank->name);
   draw_header_money(player_bank->money);
-
-  uint8_t sel = BET_RED;
-  uint32_t bet = BET_MIN;
-  uint8_t keys = 0;
-  uint8_t pkeys = 0;
-  uint8_t pressed;
-
   draw_bet_ui(sel, bet);
   move_sprite(SPR_BALL, 0, 0);
   SHOW_SPRITES;
@@ -316,7 +280,7 @@ uint8_t roulette(bank_t *player_bank) {
       if (player_bank->money < bet) {
         clear_result();
         draw_text(1, ROW_RESULT, "NO FUNDS! ");
-        snd_lose();
+        play_lose();
         wait_pad_release();
         continue;
       }
@@ -328,29 +292,34 @@ uint8_t roulette(bank_t *player_bank) {
       clear_result();
       spin_ball();
 
-      uint8_t result = roulette_numbers[(uint8_t)(rand() % 37)];
+      {
+        uint8_t result = roulette_numbers[(uint8_t)(rand() % 37)];
+        uint32_t payout = calc_payout(sel, result, bet);
 
-      clear_result();
-      draw_text(1, ROW_RESULT, "RESULT: ");
-      draw_money(result, 9, ROW_RESULT);
-      draw_text(13, ROW_RESULT, col_strs[roulette_colors[result]]);
+        clear_result();
+        draw_text(1, ROW_RESULT, "RESULT: ");
+        draw_money(result, 9, ROW_RESULT);
+        draw_text(13, ROW_RESULT, col_strs[roulette_colors[result]]);
 
-      uint32_t payout = calc_payout(sel, result, bet);
-      if (payout > 0) {
-        player_bank->money += payout;
-        draw_header_money(player_bank->money);
-        draw_text(1, ROW_OUTCOME, "WIN!  +");
-        draw_money(payout, 8, ROW_OUTCOME);
-        snd_win();
-      } else {
-        draw_text(1, ROW_OUTCOME, "LOSE...           ");
-        snd_lose();
+        if (payout > 0) {
+          player_bank->money += payout;
+          draw_header_money(player_bank->money);
+          draw_text(1, ROW_OUTCOME, "WIN!  +");
+          draw_money(payout, 8, ROW_OUTCOME);
+          transition_flash(2);
+          play_win();
+        } else {
+          draw_text(1, ROW_OUTCOME, "LOSE...           ");
+          play_lose();
+        }
       }
 
-      uint8_t d;
-      for (d = 0; d < 90; d++) {
-        wait_vbl_done();
-        music_tick();
+      {
+        uint8_t d;
+        for (d = 0; d < 90; d++) {
+          wait_vbl_done();
+          music_tick();
+        }
       }
     }
 
