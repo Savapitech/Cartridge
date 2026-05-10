@@ -315,7 +315,8 @@ uint8_t roulette(bank_t *player_bank) {
     if (pressed & J_B) {
       if (player_bank->money < bet) {
         clear_result();
-        draw_text(1, ROW_RESULT, "NO MONEY! ");
+        draw_text(1, ROW_RESULT, "NO FUNDS! ");
+        snd_lose();
         wait_pad_release();
         continue;
       }
