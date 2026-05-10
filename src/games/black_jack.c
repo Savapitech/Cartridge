@@ -46,24 +46,24 @@ static void ch4_play(uint8_t env_start, uint8_t env_dir, uint8_t env_step,
     NR44_REG = 0x80 | (len ? 0x40 : 0x00);
 }
 
-void sfx_card_flip(void)
+void play_card_flip(void)
 {
     ch4_play(8, 0, 1, 5, 0, 32);
 }
 
-void sfx_hit(void)
+void play_hit(void)
 {
     ch1_play(NOTE_G4_LO, NOTE_G4_HI, 2, 8, 12, 0, 3);
 }
 
-void sfx_stand(void)
+void play_stand(void)
 {
     ch1_play(NOTE_E5_LO, NOTE_E5_HI, 1, 10, 10, 0, 4);
     delay(80);
     ch1_play(NOTE_C4_LO, NOTE_C4_HI, 1, 10,  8, 0, 4);
 }
 
-void sfx_win(void)
+void play_win(void)
 {
     ch1_play(NOTE_C4_LO, NOTE_C4_HI, 2, 12, 14, 0, 2); delay(120);
     ch1_play(NOTE_E4_LO, NOTE_E4_HI, 2, 12, 14, 0, 2); delay(120);
@@ -71,7 +71,7 @@ void sfx_win(void)
     ch1_play(NOTE_C5_LO, NOTE_C5_HI, 2, 20, 15, 0, 1);
 }
 
-void sfx_blackjack(void)
+void play_blackjack(void)
 {
     uint8_t i;
     ch1_play(NOTE_C5_LO, NOTE_C5_HI, 2, 15, 15, 0, 1);
@@ -87,7 +87,7 @@ void sfx_blackjack(void)
     }
 }
 
-void sfx_lose(void)
+void play_lose(void)
 {
     ch1_play(NOTE_C4_LO, NOTE_C4_HI,     1, 12, 12, 0, 4); delay(100);
     ch1_play(NOTE_B4_LO, NOTE_B4_HI - 1, 1, 12, 10, 0, 4); delay(100);
@@ -95,31 +95,28 @@ void sfx_lose(void)
     ch4_play(14, 1, 1, 3, 0, 40);
 }
 
-void sfx_push(void)
+void play_push(void)
 {
     ch1_play(NOTE_G4_LO, NOTE_G4_HI, 1, 12, 10, 0, 3); delay(120);
     ch1_play(NOTE_G4_LO, NOTE_G4_HI, 1, 12, 10, 0, 3);
 }
 
-void sfx_double_down(void)
+void play_double_down(void)
 {
     ch1_play(NOTE_E5_LO, NOTE_E5_HI, 3, 20, 15, 0, 1);
     ch2_play(NOTE_C5_LO, NOTE_C5_HI, 3, 20, 13, 0, 1); delay(200);
     ch1_play(NOTE_G4_LO, NOTE_G4_HI, 3, 15, 12, 0, 2);
 }
 
-void sfx_select(void)
+void play_select(void)
 {
     ch2_play(NOTE_E4_LO, NOTE_E4_HI, 2, 6,  8, 0, 5); 
 }
 
-void sfx_confirm(void)
-{
-    ch2_play(NOTE_G4_LO, NOTE_G4_HI, 2, 8, 10, 0, 3); delay(60);
-    ch2_play(NOTE_C5_LO, NOTE_C5_HI, 2, 8, 12, 0, 2);
-}
 
-void sfx_game_over(void)
+void play_confirm(void);
+
+void play_game_over(void)
 {
     ch1_play(NOTE_C5_LO, NOTE_C5_HI, 0, 30, 14, 0, 1); delay(250);
     ch1_play(NOTE_B4_LO, NOTE_B4_HI, 0, 30, 12, 0, 2); delay(250);
@@ -195,7 +192,7 @@ void draw_hidden_card(uint8_t x, uint8_t y)
 
 void draw_card_animated(uint8_t x, uint8_t y, uint8_t val, uint8_t suit)
 {
-    sfx_card_flip();
+    play_card_flip();
     draw_card(x, y, val, suit);
     delay(80);
 }
@@ -273,7 +270,7 @@ uint8_t choose_bet(bank_t *player_bank)
                 next--;
             if (next >= 0) { 
                 selected = (uint8_t)next;
-                sfx_select(); 
+                play_select(); 
             }
         }
         if (keys_pressed & J_DOWN) {
@@ -282,11 +279,11 @@ uint8_t choose_bet(bank_t *player_bank)
                 next++;
             if (next < num_options) { 
                 selected = next;
-                sfx_select();
+                play_select();
             }
         }
         if ((keys_pressed & J_A) && bet_options[selected] <= player_bank->money) {
-            sfx_confirm();
+            play_confirm();
             return bet_options[selected];
         }
         wait_vbl_done();
@@ -334,7 +331,7 @@ uint8_t black_jack(bank_t *player_bank)
 
         d_hand[d_count]  = ((uint8_t)rand() % 13) + 1;
         d_suits[d_count] = (uint8_t)rand() & 3;
-        sfx_card_flip();
+        play_card_flip();
         draw_hidden_card(CARD_X(d_count), 5);
         d_count++;
 
@@ -358,7 +355,7 @@ uint8_t black_jack(bank_t *player_bank)
                 return MENU;
 
             if (keys_pressed & J_A) {
-                sfx_hit();
+                play_hit();
                 p_hand[p_count]  = ((uint8_t)rand() % 13) + 1;
                 p_suits[p_count] = (uint8_t)rand() & 3;
                 draw_card_animated(CARD_X(p_count), 10, p_hand[p_count], p_suits[p_count]);
@@ -374,12 +371,12 @@ uint8_t black_jack(bank_t *player_bank)
 
             if (keys_pressed & J_B) {
                 state = 1;
-                sfx_stand();
+                play_stand();
             }
 
             if ((keys_pressed & J_START) && p_count == 2
                                          && (bet << 1) <= player_bank->money) {
-                sfx_double_down();
+                play_double_down();
                 doubled_down = 1;
                 bet <<= 1;
                 draw_text(1, 2, "BET:");
@@ -399,7 +396,7 @@ uint8_t black_jack(bank_t *player_bank)
         draw_text(0, 14, "                   ");
 
         if (state == 1 || state == 3) {
-            sfx_card_flip();
+            play_card_flip();
             delay(200);
             draw_card(4, 5, d_hand[1], d_suits[1]);
             d_score = calc_score(d_hand, d_count);
@@ -421,7 +418,7 @@ uint8_t black_jack(bank_t *player_bank)
                 }
             }
         } else {
-            sfx_card_flip();
+            play_card_flip();
             draw_card(4, 5, d_hand[1], d_suits[1]);
             d_score = calc_score(d_hand, d_count);
             draw_text(13, 3, "SC:");
@@ -436,7 +433,7 @@ uint8_t black_jack(bank_t *player_bank)
 
             if (p_score > 21) {
                 transition_shake();
-                sfx_lose();
+                play_lose();
                 draw_text(1, 14, "BUST! YOU LOSE  ");
                 if (player_bank->money >= bet)
                     player_bank->money -= bet;
@@ -445,29 +442,29 @@ uint8_t black_jack(bank_t *player_bank)
 
             } else if (player_bj && !dealer_bj) {
                 transition_flash(4);
-                sfx_blackjack();
+                play_blackjack();
                 player_bank->money += bet + (bet >> 1);
                 draw_text(1, 14, "BLACKJACK! 3:2  ");
             } else if (player_bj && dealer_bj) {
-                sfx_push();
+                play_push();
                 draw_text(1, 14, "PUSH! (BJ TIE)  ");
             } else if (d_score > 21) {
-                transition_flash(2); sfx_win();
+                transition_flash(2); play_win();
                 draw_text(1, 14, "DEALER BUST! WIN");
                 player_bank->money += bet;
             } else if (p_score > d_score) {
-                transition_flash(2); sfx_win();
+                transition_flash(2); play_win();
                 draw_text(1, 14, "YOU WIN!        ");
                 player_bank->money += bet;
             } else if (p_score < d_score) {
-                transition_shake(); sfx_lose();
+                transition_shake(); play_lose();
                 draw_text(1, 14, "DEALER WINS     ");
                 if (player_bank->money >= bet)
                     player_bank->money -= bet;
                 else 
                     player_bank->money = 0;
             } else {
-                sfx_push();
+                play_push();
                 draw_text(1, 14, "PUSH! (TIE)     ");
             }
         }
@@ -478,7 +475,7 @@ uint8_t black_jack(bank_t *player_bank)
         while (1) {
             keys = joypad();
             if (keys & J_A) {
-                sfx_confirm();
+                play_confirm();
                 break;
             }
             if (keys & J_SELECT)
@@ -488,7 +485,7 @@ uint8_t black_jack(bank_t *player_bank)
 
         if (player_bank->money == 0) {
             transition_wipe_down();
-            sfx_game_over();
+            play_game_over();
             draw_text(2, 8,  "GAME OVER!");
             draw_text(1, 10, "NO MORE FUNDS");
             delay(2500);
