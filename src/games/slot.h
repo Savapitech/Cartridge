@@ -12,6 +12,11 @@
 #define T_BR 101
 #define T_SP 0
 
+#define BET_OPTIONS_COUNT 4
+#define SPIN_TICK_RATE    2
+#define NEAR_WIN_CHANCE   3
+
+
 typedef struct slot_s {
   uint8_t x;
   uint8_t y;
