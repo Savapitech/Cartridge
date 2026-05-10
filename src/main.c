@@ -17,8 +17,7 @@ void main(void) {
 
   draw_text(0, 0, bank.name);
 
-  for (;;) 
-  {
+  for (;;) {
     game_idx = game_tab[game_idx].game(&bank);
     wait_vbl_done();
   }
