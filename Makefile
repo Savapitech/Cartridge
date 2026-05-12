@@ -8,6 +8,7 @@ SRC += $(wildcard src/audio/*.c)
 SRC += $(wildcard src/utils/*.c)
 SRC += $(wildcard src/games/*.c)
 SRC += $(wildcard src/init/*.c)
+SRC += $(wildcard src/save/*.c)
 
 BUILD_DIR := .build
 
@@ -25,7 +26,8 @@ _start: all
 GBDK_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))gbdk
 CC = $(GBDK_DIR)/bin/lcc
 
-CFLAGS = -Wf--max-allocs-per-node50000
+CFLAGS  = -Wf--max-allocs-per-node50000
+LDFLAGS = -Wm-yt27 -Wm-ya1
 
 # call mk-profile release, SRC, additional CFLAGS
 define mk-profile
