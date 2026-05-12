@@ -88,7 +88,6 @@ uint8_t menu(bank_t *player_bank) {
   uint8_t last_idx = MIN_GAME_IDX;
   uint8_t keys = 0;
 
-  transition_wipe_up();
   CLEAR_BKG;
   HIDE_SPRITES;
 
