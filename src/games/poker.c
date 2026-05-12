@@ -208,14 +208,12 @@ uint8_t poker(bank_t *player_bank) {
   load_suits();
 
   while (1) {
-    /* ---- BET SELECTION ---- */
     bet = choose_bet(player_bank);
     if (bet == 0)
       return MENU;
 
     player_bank->money -= bet;
 
-    /* ---- DEAL ---- */
     transition_wipe_up();
     CLEAR_BKG;
     draw_text(0, 0, player_bank->name);
