@@ -9,6 +9,7 @@ const game_t game_tab[] = {{GAME_NAME("Menu"), menu},
                            {GAME_NAME("Roulette"), roulette},
                            {GAME_NAME("Poker"), poker},
                            {GAME_NAME("Tax money"), tax_money},
-                           {GAME_NAME("Cheat code"), cheat_code}};
+                           {GAME_NAME("Player name"), cheat_code},
+                           {GAME_NAME("Scores"), leaderboard}};
 
-const uint8_t GAME_TAB_SIZE = 7;
+const uint8_t GAME_TAB_SIZE = 8;

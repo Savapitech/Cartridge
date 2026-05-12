@@ -9,6 +9,7 @@ uint8_t black_jack(bank_t *player_bank);
 uint8_t slot_machine(bank_t *player_bank);
 uint8_t roulette(bank_t *player_bank);
 uint8_t poker(bank_t *player_bank);
+uint8_t leaderboard(bank_t *player_bank);
 uint8_t menu(bank_t *player_bank);
 uint8_t tax_money(bank_t *player_bank);
 uint8_t cheat_code(bank_t *player_bank);
@@ -26,6 +27,7 @@ typedef struct game_s {
 #define POKER ROULETTE + 1
 #define TAX_MONEY POKER + 1
 #define CHEAT_CODE TAX_MONEY + 1
+#define LEADERBOARD CHEAT_CODE + 1
 
 extern const game_t game_tab[];
 extern const uint8_t GAME_TAB_SIZE;
