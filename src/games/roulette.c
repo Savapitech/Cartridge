@@ -91,7 +91,8 @@ static void load_tiles(void) {
   set_bkg_data(T_BRD_VR, 1, brd_vr);
   set_bkg_data(T_DIAMOND, 1, diamond_tile);
   set_bkg_data(T_CHIP, 1, chip_tile);
-  set_sprite_data(SPR_BALL, 1, ball_tile);
+  set_sprite_data(BALL_TILE_IDX, 1, ball_tile);
+  set_sprite_tile(SPR_BALL, BALL_TILE_IDX);
 }
 
 static void draw_bg(void) {

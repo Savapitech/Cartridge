@@ -35,6 +35,7 @@
 #define T_CHIP 109
 
 #define SPR_BALL 0
+#define BALL_TILE_IDX 204
 
 #define WHEEL_TX 2
 #define WHEEL_TY 2
