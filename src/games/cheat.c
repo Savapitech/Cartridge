@@ -7,6 +7,7 @@
 #include "../utils/utils.h"
 #include "games.h"
 #include "menu.h"
+#include "tetris.h"
 
 uint8_t cheat_code(bank_t *player_bank) {
   char buffer[INPUT_BUFFER] = INPUT_HANDLER;
@@ -29,6 +30,9 @@ uint8_t cheat_code(bank_t *player_bank) {
 
   if (len == 0)
     return MENU;
+
+  if (strncmp(buffer, "tetris", 6) == 0)
+    return tetris(player_bank);
 
   if (strncmp(buffer, "epitech", 7) == 0) {
     player_bank->money += 42;
