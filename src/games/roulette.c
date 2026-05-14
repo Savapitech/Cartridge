@@ -241,6 +241,7 @@ uint8_t roulette(bank_t *player_bank) {
   draw_header_money(player_bank->money);
   draw_bet_ui(sel, bet);
   move_sprite(SPR_BALL, 0, 0);
+  OBP0_REG = 0xD2;
   SHOW_SPRITES;
   SHOW_BKG;
 
