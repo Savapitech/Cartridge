@@ -2,6 +2,12 @@
 #include <rand.h>
 
 #include "../assets/black_jack_asset.h"
+#include "../assets/asset_croupier1.h"
+#include "../assets/LeftEye.h"
+#include "../assets/RightEye.h"
+#include "../assets/LeftLeftEye.h"
+#include "../assets/LeftRightEye.h"
+
 #include "../audio/audio.h"
 #include "../casino.h"
 #include "../utils/transitions.h"
@@ -9,6 +15,27 @@
 #include "black_jack.h"
 #include "games.h"
 #include "menu.h"
+
+#define OFFSET_CROUPIER     (uint8_t)180
+#define OFFSET_LEFT_EYE     (uint8_t)(OFFSET_CROUPIER + asset_croupier1_TILE_COUNT)
+#define OFFSET_RIGHT_EYE    (uint8_t)(OFFSET_LEFT_EYE + LeftEye_TILE_COUNT)
+
+#define TRUE 1
+#define FALSE 0
+
+void draw_croupier(void) {
+    uint8_t x, y;
+    set_bkg_data(OFFSET_CROUPIER, asset_croupier1_TILE_COUNT, asset_croupier1_tiles);
+    set_bkg_data(OFFSET_LEFT_EYE, LeftLeftEye_TILE_COUNT, LeftLeftEye_tiles);
+    set_bkg_data(OFFSET_RIGHT_EYE, LeftRightEye_TILE_COUNT, LeftRightEye_tiles);
+
+    for (y = 0; y < 5; y++) {
+        for (x = 0; x < 4; x++) {
+          uint8_t tile_index = asset_croupier1_map[y * 4 + x];
+          set_bkg_tile_xy(15 + x, 1 + y, tile_index + OFFSET_CROUPIER);
+        }
+    }
+}
 
 static void play_card_flip(void) { ch4_play(8, 0, 1, 5, 0, 32); }
 
@@ -181,12 +208,16 @@ uint8_t black_jack(bank_t *player_bank) {
   audio_init();
   load_suits();
 
+  CLEAR_BKG;
+
+  uint8_t croupier_animation = FALSE;
+
   while (1) {
     bet = choose_bet(player_bank);
     if (bet == 0)
       return MENU;
     transition_wipe_up();
-    CLEAR_BKG;
+    
     draw_text(0, 0, player_bank->name);
     draw_money(player_bank->money, 0, 1);
     draw_text(1, 2, "BET:");
@@ -217,8 +248,8 @@ uint8_t black_jack(bank_t *player_bank) {
     d_count++;
 
     p_score = calc_score(p_hand, p_count);
-    draw_text(13, 8, "SC:");
-    draw_score(p_score, 16, 8);
+    draw_text(10, 8, "SC:");
+    draw_score(p_score, 13, 8);
     if (p_score == 21)
       state = 3;
     wait_pad_release();
@@ -227,6 +258,8 @@ uint8_t black_jack(bank_t *player_bank) {
                 ((bet << 1) <= player_bank->money) ? "A:HIT B:STA ST:DBL"
                                                    : "A:HIT    B:STAND  ");
     }
+    
+    draw_croupier();
     while (state == 0) {
       prev_keys = keys;
       keys = joypad();
@@ -243,7 +276,7 @@ uint8_t black_jack(bank_t *player_bank) {
                            p_suits[p_count]);
         p_count++;
         p_score = calc_score(p_hand, p_count);
-        draw_score(p_score, 16, 8);
+        draw_score(p_score, 13, 8);
         if (p_score > 21)
           state = 2;
         else if (p_score == 21)
@@ -254,6 +287,10 @@ uint8_t black_jack(bank_t *player_bank) {
       if (keys_pressed & J_B) {
         state = 1;
         play_stand();
+        if (croupier_animation == FALSE){
+          set_bkg_tile_xy(16, 2, OFFSET_LEFT_EYE);
+          set_bkg_tile_xy(17, 2, OFFSET_RIGHT_EYE);
+        }
       }
 
       if ((keys_pressed & J_START) && p_count == 2 &&
@@ -270,7 +307,7 @@ uint8_t black_jack(bank_t *player_bank) {
                            p_suits[p_count]);
         p_count++;
         p_score = calc_score(p_hand, p_count);
-        draw_score(p_score, 16, 8);
+        draw_score(p_score, 13, 8);
         state = (p_score > 21) ? 2 : 1;
       }
       wait_vbl_done();
@@ -282,8 +319,8 @@ uint8_t black_jack(bank_t *player_bank) {
       delay(200);
       draw_card(4, 5, d_hand[1], d_suits[1]);
       d_score = calc_score(d_hand, d_count);
-      draw_text(13, 3, "SC:");
-      draw_score(d_score, 16, 3);
+      draw_text(10, 3, "SC:");
+      draw_score(d_score, 13, 3);
       wait_vbl_done();
       delay(600);
 
@@ -295,7 +332,7 @@ uint8_t black_jack(bank_t *player_bank) {
                              d_suits[d_count]);
           d_count++;
           d_score = calc_score(d_hand, d_count);
-          draw_score(d_score, 16, 3);
+          draw_score(d_score, 13, 3);
           delay(600);
         }
       }
@@ -303,8 +340,8 @@ uint8_t black_jack(bank_t *player_bank) {
       play_card_flip();
       draw_card(4, 5, d_hand[1], d_suits[1]);
       d_score = calc_score(d_hand, d_count);
-      draw_text(13, 3, "SC:");
-      draw_score(d_score, 16, 3);
+      draw_text(10, 3, "SC:");
+      draw_score(d_score, 13, 3);
     }
 
     {
@@ -313,6 +350,8 @@ uint8_t black_jack(bank_t *player_bank) {
 
       delay(200);
 
+      set_bkg_tile_xy(16, 2, asset_croupier1_map[5] + OFFSET_CROUPIER);
+      set_bkg_tile_xy(17, 2, asset_croupier1_map[6] + OFFSET_CROUPIER);
       if (p_score > 21) {
         transition_shake();
         play_lose();
@@ -343,6 +382,7 @@ uint8_t black_jack(bank_t *player_bank) {
         transition_shake();
         play_lose();
         draw_text(1, 14, "DEALER WINS     ");
+       
         if (player_bank->money >= bet)
           player_bank->money -= bet;
         else
