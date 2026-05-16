@@ -14,10 +14,38 @@ const uint8_t slot_pos[4] = {58, 77, 94, 110};
 const uint8_t bet_options[4] = {5, 10, 25, 50};
 slot_t slots_array[16];
 
-const uint8_t slot_machine_border[] = {
-    T_TL, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_TR,
-    T_VT, T_SP, T_SP, T_SP, T_SP, T_SP, T_SP, T_SP, T_SP, T_VT,
-    T_BL, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_HZ, T_BR};
+static const uint8_t win_brd_tl[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0xC0, 0xC0,
+                                       0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0,
+                                       0xC0, 0xC0, 0xC0, 0xC0};
+static const uint8_t win_brd_tr[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0x03, 0x03,
+                                       0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                                       0x03, 0x03, 0x03, 0x03};
+static const uint8_t win_brd_bl[16] = {0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0,
+                                       0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0,
+                                       0xFF, 0xFF, 0xFF, 0xFF};
+static const uint8_t win_brd_br[16] = {0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                                       0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                                       0xFF, 0xFF, 0xFF, 0xFF};
+static const uint8_t win_brd_h[16] = {0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
+                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                      0x00, 0x00, 0x00, 0x00};
+static const uint8_t win_brd_hb[16] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                       0xFF, 0xFF, 0xFF, 0xFF};
+static const uint8_t win_brd_vl[16] = {0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0,
+                                       0xC0, 0xC0, 0xC0, 0xC0, 0xC0, 0xC0,
+                                       0xC0, 0xC0, 0xC0, 0xC0};
+static const uint8_t win_brd_vr[16] = {0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                                       0x03, 0x03, 0x03, 0x03, 0x03, 0x03,
+                                       0x03, 0x03, 0x03, 0x03};
+
+static const uint8_t slot_machine_border[30] = {
+    SLOT_BRD_TL, SLOT_BRD_H,  SLOT_BRD_H,  SLOT_BRD_H,  SLOT_BRD_H,
+    SLOT_BRD_H,  SLOT_BRD_H,  SLOT_BRD_H,  SLOT_BRD_H,  SLOT_BRD_TR,
+    SLOT_BRD_VL, 0,           0,           0,           0,
+    0,           0,           0,           0,           SLOT_BRD_VR,
+    SLOT_BRD_BL, SLOT_BRD_HB, SLOT_BRD_HB, SLOT_BRD_HB, SLOT_BRD_HB,
+    SLOT_BRD_HB, SLOT_BRD_HB, SLOT_BRD_HB, SLOT_BRD_HB, SLOT_BRD_BR};
 
 static void play_jackpot(void) {
   uint8_t i;
@@ -99,7 +127,7 @@ static void win_animation(void) {
   uint8_t i;
 
   for (i = 0; i < 5; i++)
-    set_sprite_tile(i, 2);
+    set_sprite_tile(i, (uint8_t)(SLOT_SPR_BASE + 2));
 
   play_jackpot();
 
@@ -209,18 +237,27 @@ static void init_slot(void) {
   CLEAR_BKG;
   audio_init();
 
-  set_sprite_data(0, 1, star_tile);
-  set_sprite_data(1, 1, cross_tile);
-  set_sprite_data(2, 1, circle_tile);
-  set_sprite_data(3, 1, epitech_tile);
+  set_bkg_data(SLOT_BRD_TL, 1, win_brd_tl);
+  set_bkg_data(SLOT_BRD_TR, 1, win_brd_tr);
+  set_bkg_data(SLOT_BRD_BL, 1, win_brd_bl);
+  set_bkg_data(SLOT_BRD_BR, 1, win_brd_br);
+  set_bkg_data(SLOT_BRD_H, 1, win_brd_h);
+  set_bkg_data(SLOT_BRD_HB, 1, win_brd_hb);
+  set_bkg_data(SLOT_BRD_VL, 1, win_brd_vl);
+  set_bkg_data(SLOT_BRD_VR, 1, win_brd_vr);
+
+  set_sprite_data((uint8_t)(SLOT_SPR_BASE + 0), 1, star_tile);
+  set_sprite_data((uint8_t)(SLOT_SPR_BASE + 1), 1, cross_tile);
+  set_sprite_data((uint8_t)(SLOT_SPR_BASE + 2), 1, circle_tile);
+  set_sprite_data((uint8_t)(SLOT_SPR_BASE + 3), 1, epitech_tile);
 
   ptr = slots_array;
   for (i = 0; i < 16; i++) {
-    set_sprite_tile(i, 0);
+    set_sprite_tile(i, SLOT_SPR_BASE);
     ptr->x = slot_pos[i >> 2];
     ptr->y = 80 + ((i & 3) << 4);
     ptr->type = (uint8_t)rand() & 3;
-    set_sprite_tile(i, ptr->type);
+    set_sprite_tile(i, SLOT_SPR_BASE + ptr->type);
     if (ptr->y < TARGET_Y - 2 || ptr->y > TARGET_Y + 4)
       move_sprite(i, 0, 0);
     else
@@ -405,7 +442,7 @@ uint8_t slot_machine(bank_t *player_bank) {
         } else {
           ptr->type = (uint8_t)rand() & 3;
         }
-        set_sprite_tile(i, ptr->type);
+        set_sprite_tile(i, SLOT_SPR_BASE + ptr->type);
         ptr->y = 80;
       }
       if (ptr->y < TARGET_Y - 2 || ptr->y > TARGET_Y + 4)
