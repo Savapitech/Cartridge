@@ -30,8 +30,10 @@ typedef struct {
   uint8_t lo, hi, dur;
 } note_t;
 
-#define N(x, d) {(uint8_t)((x) & 0xFF), (uint8_t)(((x) >> 8) | 0x80), (d)}
-#define REST(d) {0, 0, (d)}
+#define N(x, d)                                                                \
+  { (uint8_t)((x) & 0xFF), (uint8_t)(((x) >> 8) | 0x80), (d) }
+#define REST(d)                                                                \
+  { 0, 0, (d) }
 
 #define MELODY_LEN 13
 static const note_t melody[MELODY_LEN] = {

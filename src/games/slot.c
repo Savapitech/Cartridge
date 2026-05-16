@@ -1,13 +1,13 @@
 #include <gb/gb.h>
 #include <rand.h>
 
+#include "../assets/button.h"
+#include "../assets/slotBorder.h"
 #include "../assets/slot_asset.h"
 #include "../audio/audio.h"
 #include "../casino.h"
 #include "../utils/transitions.h"
 #include "../utils/utils.h"
-#include "../assets/slotBorder.h"
-#include "../assets/button.h"
 #include "games.h"
 #include "menu.h"
 #include "slot.h"
@@ -241,7 +241,6 @@ static void init_slot(void) {
   CLEAR_BKG;
   audio_init();
 
-  
   set_bkg_data(SLOT_BRD_TL, 1, win_brd_tl);
   set_bkg_data(SLOT_BRD_TR, 1, win_brd_tr);
   set_bkg_data(SLOT_BRD_BL, 1, win_brd_bl);
@@ -290,8 +289,8 @@ static void init_slot(void) {
     set_bkg_tile_xy(15, i, SLOT_BRD_VR);
   for (int i = 6; i < 15; i++)
     set_bkg_tile_xy(i, 8, SLOT_BRD_H);
-  
-   set_bkg_tile_xy(5, 8, SLOT_BRD_DI);
+
+  set_bkg_tile_xy(5, 8, SLOT_BRD_DI);
   set_bkg_tile_xy(15, 8, SLOT_BRD_DI);
   set_bkg_tile_xy(6, 12, SLOT_BUTTON);
   set_bkg_tile_xy(8, 12, SLOT_BUTTON);
