@@ -3,8 +3,6 @@
 
 #include "../assets/black_jack_asset.h"
 #include "../assets/asset_croupier1.h"
-#include "../assets/LeftEye.h"
-#include "../assets/RightEye.h"
 #include "../assets/LeftLeftEye.h"
 #include "../assets/LeftRightEye.h"
 
@@ -18,7 +16,7 @@
 
 #define OFFSET_CROUPIER     (uint8_t)180
 #define OFFSET_LEFT_EYE     (uint8_t)(OFFSET_CROUPIER + asset_croupier1_TILE_COUNT)
-#define OFFSET_RIGHT_EYE    (uint8_t)(OFFSET_LEFT_EYE + LeftEye_TILE_COUNT)
+#define OFFSET_RIGHT_EYE    (uint8_t)(OFFSET_LEFT_EYE + LeftLeftEye_TILE_COUNT)
 
 #define TRUE 1
 #define FALSE 0

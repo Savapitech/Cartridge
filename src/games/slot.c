@@ -6,6 +6,8 @@
 #include "../casino.h"
 #include "../utils/transitions.h"
 #include "../utils/utils.h"
+#include "../assets/slotBorder.h"
+#include "../assets/button.h"
 #include "games.h"
 #include "menu.h"
 #include "slot.h"
@@ -230,6 +232,8 @@ static uint8_t choose_bet_slot(bank_t *player_bank) {
   }
 }
 
+#include "../assets/border.h"
+
 static void init_slot(void) {
   uint8_t i;
   slot_t *ptr;
@@ -237,6 +241,7 @@ static void init_slot(void) {
   CLEAR_BKG;
   audio_init();
 
+  
   set_bkg_data(SLOT_BRD_TL, 1, win_brd_tl);
   set_bkg_data(SLOT_BRD_TR, 1, win_brd_tr);
   set_bkg_data(SLOT_BRD_BL, 1, win_brd_bl);
@@ -245,6 +250,9 @@ static void init_slot(void) {
   set_bkg_data(SLOT_BRD_HB, 1, win_brd_hb);
   set_bkg_data(SLOT_BRD_VL, 1, win_brd_vl);
   set_bkg_data(SLOT_BRD_VR, 1, win_brd_vr);
+  set_bkg_data(SLOT_BRD_DI, slotBorder_TILE_COUNT, slotBorder_tiles);
+  set_bkg_data(SLOT_BUTTON, button_TILE_COUNT, button_tiles);
+  set_bkg_data(SLOT_BORDER, border_TILE_COUNT, border_tiles);
 
   set_sprite_data((uint8_t)(SLOT_SPR_BASE + 0), 1, star_tile);
   set_sprite_data((uint8_t)(SLOT_SPR_BASE + 1), 1, cross_tile);
@@ -266,6 +274,29 @@ static void init_slot(void) {
   }
 
   draw_text(4, 5, "SLOT MACHINE");
+  set_bkg_tile_xy(4, 12, SLOT_BRD_DI);
+  set_bkg_tile_xy(14, 12, SLOT_BRD_DI);
+
+  for (int i = 4; i < 14; i++)
+    set_bkg_tile_xy(i, 13, SLOT_BORDER);
+
+  for (int i = 13; i < 18; i++)
+    set_bkg_tile_xy(3, i, SLOT_BRD_VR);
+  for (int i = 14; i < 18; i++)
+    set_bkg_tile_xy(13, i, SLOT_BRD_VR);
+  for (int i = 13; i < 18; i++)
+    set_bkg_tile_xy(14, i, SLOT_BRD_VR);
+  for (int i = 8; i < 18; i++)
+    set_bkg_tile_xy(15, i, SLOT_BRD_VR);
+  for (int i = 6; i < 15; i++)
+    set_bkg_tile_xy(i, 8, SLOT_BRD_H);
+  
+   set_bkg_tile_xy(5, 8, SLOT_BRD_DI);
+  set_bkg_tile_xy(15, 8, SLOT_BRD_DI);
+  set_bkg_tile_xy(6, 12, SLOT_BUTTON);
+  set_bkg_tile_xy(8, 12, SLOT_BUTTON);
+  set_bkg_tile_xy(12, 12, SLOT_BUTTON);
+
   set_bkg_tiles(5, 9, 10, 3, slot_machine_border);
   SHOW_SPRITES;
 }
@@ -408,17 +439,20 @@ uint8_t slot_machine(bank_t *player_bank) {
           transition_flash(5);
           player_bank->money += winnings;
           draw_money(player_bank->money, 0, 1);
-          draw_text(1, 14, "JACKPOT! x10    ");
+          draw_text(5, 14, "JACKPOT!");
+          draw_text(8, 15, "x10");
           win_animation();
         } else {
           if (near) {
             transition_shake();
             play_near_miss();
-            draw_text(1, 14, "SO CLOSE...!    ");
+            draw_text(5, 14, "SO CLOSE");
+            draw_text(8, 15, "...!");
             delay(600);
           } else {
             play_loose();
-            draw_text(1, 14, "NO LUCK...      ");
+            draw_text(5, 14, "NO LUCK");
+            draw_text(8, 15, "...");
           }
           delay(800);
         }

@@ -13,6 +13,9 @@
 #define SLOT_BRD_HB 118
 #define SLOT_BRD_VL 119
 #define SLOT_BRD_VR 120
+#define SLOT_BRD_DI 121
+#define SLOT_BUTTON 122
+#define SLOT_BORDER 123
 
 #define BET_OPTIONS_COUNT 4
 #define SPIN_TICK_RATE 2
