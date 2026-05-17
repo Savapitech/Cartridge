@@ -6,6 +6,7 @@
 #include "../assets/asset_croupier1.h"
 #include "../assets/black_jack_asset.h"
 
+
 #include "../audio/audio.h"
 #include "../casino.h"
 #include "../utils/transitions.h"
@@ -104,7 +105,7 @@ static void draw_hidden_card(uint8_t x, uint8_t y) {
 static void draw_card_animated(uint8_t x, uint8_t y, uint8_t val,
                                uint8_t suit) {
   play_card_flip();
-  draw_card(x, y, val, suit);
+  load_card_at(x, y, val, suit);
   delay(80);
 }
 
@@ -205,7 +206,6 @@ uint8_t black_jack(bank_t *player_bank) {
   uint8_t p_score, d_score, state, bet, doubled_down;
 
   audio_init();
-  load_suits();
 
   CLEAR_BKG;
 
@@ -216,6 +216,7 @@ uint8_t black_jack(bank_t *player_bank) {
     if (bet == 0)
       return MENU;
     transition_wipe_up();
+    reset_card_memory();
 
     draw_text(0, 0, player_bank->name);
     draw_money(player_bank->money, 0, 1);
@@ -316,7 +317,7 @@ uint8_t black_jack(bank_t *player_bank) {
     if (state == 1 || state == 3) {
       play_card_flip();
       delay(200);
-      draw_card(4, 5, d_hand[1], d_suits[1]);
+      draw_card_animated(4, 5, d_hand[1], d_suits[1]);
       d_score = calc_score(d_hand, d_count);
       draw_text(10, 3, "SC:");
       draw_score(d_score, 13, 3);

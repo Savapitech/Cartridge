@@ -4,6 +4,7 @@ BIN_NAME := a.gb
 
 SRC = $(wildcard src/*.c)
 SRC += $(wildcard src/assets/*.c)
+SRC += $(wildcard src/assets/card/*.c)
 SRC += $(wildcard src/audio/*.c)
 SRC += $(wildcard src/utils/*.c)
 SRC += $(wildcard src/games/*.c)
