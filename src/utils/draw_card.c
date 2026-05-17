@@ -31,6 +31,7 @@ const uint8_t* const CARD_TILES[4][13] = {
 #define CARD_WIDTH 2
 #define CARD_HEIGHT 2
 #define TILES_PER_CARD 4 
+
 #define CARD_START_TILE 128
 
 uint8_t loaded_cards[7];
@@ -46,7 +47,7 @@ void reset_card_memory(void) {
 
 void load_card_at(uint8_t x, uint8_t y, uint8_t val, uint8_t suit) {
     uint8_t card_id = (suit * 13) + (val - 1);
-    uint8_t byte_idx = card_id >> 3 
+    uint8_t byte_idx = card_id >> 3;
     uint8_t bit_idx = card_id & 7;
     uint8_t tile_id;
     uint8_t i;
@@ -54,7 +55,6 @@ void load_card_at(uint8_t x, uint8_t y, uint8_t val, uint8_t suit) {
     if ((loaded_cards[byte_idx] & (1 << bit_idx)) == 0) {
         tile_id = next_free_tile;
         set_bkg_data(tile_id, TILES_PER_CARD, CARD_TILES[suit][val - 1]);
-  
         loaded_cards[byte_idx] |= (1 << bit_idx);
         next_free_tile += TILES_PER_CARD;
     } else {
