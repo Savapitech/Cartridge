@@ -24,7 +24,12 @@ include utils.mk
 .PHONY: _start all
 _start: all
 
+ifeq ($(shell hostname),pluton)
+GBDK_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))gbdk
+CC = $(GBDK_DIR)/bin/lcc
+else
 CC = lcc
+endif
 
 CFLAGS  = -Wf--max-allocs-per-node50000
 LDFLAGS = -Wm-yt27 -Wm-ya1
