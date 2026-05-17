@@ -88,13 +88,6 @@ static void load_suits(void) {
   set_bkg_data(131, 1, carreau_tile);
 }
 
-static void draw_card(uint8_t x, uint8_t y, uint8_t val, uint8_t suit) {
-  set_bkg_tile_xy(x, y, card_chars[val] - 32);
-  set_bkg_tile_xy(x + 1, y, ' ' - 32);
-  set_bkg_tile_xy(x, y + 1, ' ' - 32);
-  set_bkg_tile_xy(x + 1, y + 1, 128 + suit);
-}
-
 static void draw_hidden_card(uint8_t x, uint8_t y) {
   set_bkg_tile_xy(x, y, '?' - 32);
   set_bkg_tile_xy(x + 1, y, '?' - 32);
@@ -338,7 +331,7 @@ uint8_t black_jack(bank_t *player_bank) {
       }
     } else {
       play_card_flip();
-      draw_card(4, 5, d_hand[1], d_suits[1]);
+      draw_card_animated(4, 5, d_hand[1], d_suits[1]);
       d_score = calc_score(d_hand, d_count);
       draw_text(10, 3, "SC:");
       draw_score(d_score, 13, 3);

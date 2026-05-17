@@ -21,23 +21,10 @@ static const char *hand_names[10] = {
 /* Pay multipliers indexed by hand rank */
 static const uint8_t pay_mult[10] = {0, 1, 2, 3, 4, 6, 9, 25, 50, 250};
 
-static void load_suits(void) {
-  set_bkg_data(128, 1, coeurs_tile);
-  set_bkg_data(129, 1, pique_tile);
-  set_bkg_data(130, 1, trefle_tile);
-  set_bkg_data(131, 1, carreau_tile);
-}
-
-static void draw_card(uint8_t x, uint8_t y, uint8_t val, uint8_t suit) {
-  set_bkg_tile_xy(x, y, card_chars[val] - 32);
-  set_bkg_tile_xy(x + 1, y, ' ' - 32);
-  set_bkg_tile_xy(x, y + 1, ' ' - 32);
-  set_bkg_tile_xy(x + 1, y + 1, 128 + suit);
-}
 
 static void deal_card(uint8_t x, uint8_t y, uint8_t val, uint8_t suit) {
   ch4_play(8, 0, 1, 5, 0, 32);
-  draw_card(x, y, val, suit);
+  load_card_at(x, y, val, suit);
   delay(80);
 }
 
@@ -205,7 +192,6 @@ uint8_t poker(bank_t *player_bank) {
   uint8_t keys = 0, prev_keys, pressed;
 
   audio_init();
-  load_suits();
 
   while (1) {
     bet = choose_bet(player_bank);
@@ -215,6 +201,7 @@ uint8_t poker(bank_t *player_bank) {
     player_bank->money -= bet;
 
     transition_wipe_up();
+    reset_card_memory();
     CLEAR_BKG;
     draw_text(0, 0, player_bank->name);
     draw_money(player_bank->money, 0, 1);
