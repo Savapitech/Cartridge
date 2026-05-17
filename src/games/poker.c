@@ -21,7 +21,6 @@ static const char *hand_names[10] = {
 /* Pay multipliers indexed by hand rank */
 static const uint8_t pay_mult[10] = {0, 1, 2, 3, 4, 6, 9, 25, 50, 250};
 
-
 static void deal_card(uint8_t x, uint8_t y, uint8_t val, uint8_t suit) {
   ch4_play(8, 0, 1, 5, 0, 32);
   load_card_at(x, y, val, suit);

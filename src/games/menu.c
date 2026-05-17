@@ -1,6 +1,7 @@
 #include <gb/gb.h>
 #include <rand.h>
 
+#include "../assets/menu_banner.h"
 #include "../audio/audio.h"
 #include "../casino.h"
 #include "../utils/transitions.h"
@@ -8,48 +9,23 @@
 #include "games.h"
 #include "menu.h"
 
-/*
- * Screen layout (20 cols x 18 rows):
- *
- *  Row  0: +==================+
- *  Row  1: |  ** CASINO GB ** |
- *  Row  2: +==================+
- *  Row  3: |                  |
- *  Row  4: | <name>   $<money>|
- *  Row  5: |                  |
- *  Row  6: +------------------+
- *  Row  7: |                  |
- *  Row  8: |    <prev game>   |
- *  Row  9: | -> <CURR GAME>   |
- *  Row 10: |    <next game>   |
- *  Row 11: |                  |
- *  Row 12: +------------------+
- *  Row 13: |                  |
- *  Row 14: |  A   : SELECT    |
- *  Row 15: |  SEL : QUIT      |
- *  Row 16: |                  |
- *  Row 17: +==================+
- */
+static void draw_banner(void) { draw_text(3, 1, "** CASINO GB **"); }
 
 static void draw_border(void) {
   uint8_t i;
 
-  draw_text(0, 0, "+==================+");
-  draw_text(0, 1, "|  ** CASINO GB ** |");
-  draw_text(0, 2, "+==================+");
-  draw_text(0, 6, "+------------------+");
-  draw_text(0, 12, "+------------------+");
+  draw_banner();
+
+  draw_text(0, 5, "+------------------+");
+  draw_text(0, 11, "+------------------+");
   draw_text(0, 17, "+==================+");
 
-  for (i = 3; i < 6; i++) {
+  for (i = 6; i < 11; i++) {
     set_bkg_tile_xy(0, i, '|' - 32);
     set_bkg_tile_xy(19, i, '|' - 32);
   }
-  for (i = 7; i < 12; i++) {
-    set_bkg_tile_xy(0, i, '|' - 32);
-    set_bkg_tile_xy(19, i, '|' - 32);
-  }
-  for (i = 13; i < 17; i++) {
+
+  for (i = 12; i < 17; i++) {
     set_bkg_tile_xy(0, i, '|' - 32);
     set_bkg_tile_xy(19, i, '|' - 32);
   }
@@ -57,13 +33,13 @@ static void draw_border(void) {
 
 static void draw_player_info(bank_t *player_bank) {
   draw_text(2, 4, player_bank->name);
-  draw_text(9, 4, "$");
-  draw_money(player_bank->money, 10, 4);
+  draw_text(10, 4, "$");
+  draw_money(player_bank->money, 11, 4);
 }
 
 static void draw_hint(void) {
-  draw_text(2, 14, "A   : SELECT    ");
-  draw_text(2, 15, "SEL : QUIT      ");
+  draw_text(2, 13, "A   : SELECT    ");
+  draw_text(2, 14, "SEL : QUIT      ");
 }
 
 static void draw_game_list(uint8_t game_idx) {
@@ -83,17 +59,26 @@ static void draw_game_list(uint8_t game_idx) {
             game_tab[down_idx].name);
 }
 
+static void clear_banner_sprites(void) {
+  uint8_t i;
+  for (i = 0; i < 22; i++)
+    move_sprite(i, 0, 0);
+}
+
 uint8_t menu(bank_t *player_bank) {
   uint8_t game_idx = 0;
   uint8_t last_idx = MIN_GAME_IDX;
   uint8_t keys = 0;
 
   CLEAR_BKG;
-  HIDE_SPRITES;
+  SHOW_SPRITES;
 
   draw_border();
   draw_player_info(player_bank);
   draw_hint();
+
+  load_banner_sprites();
+  init_banner_lights();
 
   while (!(keys & J_SELECT)) {
     keys = joypad();
@@ -102,6 +87,8 @@ uint8_t menu(bank_t *player_bank) {
       play_confirm();
       wait_pad_release();
       initrand(DIV_REG);
+      clear_banner_sprites();
+      HIDE_SPRITES;
       return game_idx;
     }
 
@@ -120,8 +107,12 @@ uint8_t menu(bank_t *player_bank) {
       play_select();
       wait_pad_release();
     }
+
+    update_banner_lights();
     wait_vbl_done();
   }
+  clear_banner_sprites();
+  HIDE_SPRITES;
   return game_idx;
 }
 

@@ -44,6 +44,10 @@ const uint8_t casino_brd_div[16] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                                     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00,
                                     0x00, 0x00, 0x00, 0x00};
 
+const uint8_t casino_banner_bg[16] = {0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
+                                      0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
+                                      0x00, 0xFF, 0x00, 0xFF};
+
 void load_casino_tiles(void) {
   set_bkg_data(T_FELT, 1, casino_felt);
   set_bkg_data(T_BRD_TL, 1, casino_brd_tl);
@@ -57,6 +61,7 @@ void load_casino_tiles(void) {
   set_bkg_data(T_DIAMOND, 1, casino_diamond);
   set_bkg_data(T_CHIP, 1, casino_chip);
   set_bkg_data(T_BRD_DIV, 1, casino_brd_div);
+  set_bkg_data(T_BANNER_BG, 1, casino_banner_bg);
 }
 
 void draw_casino_bg(void) {

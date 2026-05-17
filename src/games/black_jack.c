@@ -6,7 +6,6 @@
 #include "../assets/asset_croupier1.h"
 #include "../assets/black_jack_asset.h"
 
-
 #include "../audio/audio.h"
 #include "../casino.h"
 #include "../utils/transitions.h"

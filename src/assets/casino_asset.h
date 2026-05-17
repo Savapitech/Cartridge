@@ -15,6 +15,7 @@
 #define T_DIAMOND 105
 #define T_CHIP 106
 #define T_BRD_DIV 107
+#define T_BANNER_BG 108
 
 extern const uint8_t casino_felt[16];
 extern const uint8_t casino_brd_tl[16];
@@ -28,6 +29,7 @@ extern const uint8_t casino_brd_vr[16];
 extern const uint8_t casino_diamond[16];
 extern const uint8_t casino_chip[16];
 extern const uint8_t casino_brd_div[16];
+extern const uint8_t casino_banner_bg[16];
 
 void load_casino_tiles(void);
 void draw_casino_bg(void);
